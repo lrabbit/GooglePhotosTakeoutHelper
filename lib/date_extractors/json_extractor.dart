@@ -40,6 +40,12 @@ Future<File?> _jsonForFile(File file, {required bool tryhard}) async {
     // test: combining this with _shortenName?? which way around?
     _bracketSwap,
     _removeExtra,
+    // iOS live photos store an extra MP4 file with the same name as the HEIC file
+    _withHEICExtension,
+    // handle the bracket swap case for the extra MP4 file
+    _bracketSwapWithHEICExtension,
+    // handle cases where the live photo is a JPG instead of a HEIC
+    _withJPGExtension,
     // use those two only with tryhard
     // look at https://github.com/TheLastGimbus/GooglePhotosTakeoutHelper/issues/175
     // thanks @denouche for reporting this!
@@ -119,4 +125,19 @@ String _bracketSwap(String filename) {
   // 'image(3).(2)(3).jpg' <- "(3)." repeats twice
   final withoutBracket = filename.replaceLast(bracket, '');
   return '$withoutBracket$bracket';
+}
+
+String _withHEICExtension(String filename) {
+  if (!filename.endsWith('.MP4')) return filename;
+  return filename.replaceFirst('.MP4', '.HEIC');
+}
+
+String _bracketSwapWithHEICExtension(String filename) {
+  if (!filename.endsWith('.MP4')) return _bracketSwap(filename);
+  return _bracketSwap(filename.replaceFirst('.MP4', '.HEIC'));
+}
+
+String _withJPGExtension(String filename) {
+  if (!filename.endsWith('.MP4')) return filename;
+  return filename.replaceFirst('.MP4', '.JPG');
 }
