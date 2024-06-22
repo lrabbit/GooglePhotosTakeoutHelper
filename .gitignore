@@ -13,3 +13,6 @@ photos/
 ALL_PHOTOS/
 output/
 *.log
+
+# compiled binaries
+bin/*.exe
